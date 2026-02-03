@@ -1,0 +1,74 @@
+<template>
+    <lightning-datatable
+        key-field="Id"
+        data={data}
+        columns={columns}
+        onrowaction={handleRowAction}
+        hide-checkbox-column
+        show-row-number-column>
+    </lightning-datatable>
+
+    <template if:true={showExpand}>
+        <section role="dialog" class="slds-modal slds-fade-in-open slds-modal_large">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 class="slds-text-heading_medium">
+                        Audit Record Details
+                    </h2>
+                </header>
+
+                <div class="slds-modal__content slds-p-around_medium slds-scrollable_y">
+
+                    <p class="slds-text-title_bold">Field Name</p>
+                    <p class="slds-m-bottom_medium">
+                        {selectedRow.Field_Name__c}
+                    </p>
+
+                    <p class="slds-text-title_bold">Old Value</p>
+                    <lightning-formatted-text
+                        value={selectedRow.Old_Value__c}>
+                    </lightning-formatted-text>
+
+                    <p class="slds-text-title_bold slds-m-top_medium">
+                        New Value
+                    </p>
+                    <lightning-formatted-text
+                        value={selectedRow.New_Value__c}>
+                    </lightning-formatted-text>
+
+                    <p class="slds-text-title_bold slds-m-top_medium">
+                        Old Lookup ID
+                    </p>
+                    <p>{selectedRow.Old_Value_Lookup_ID__c}</p>
+
+                    <p class="slds-text-title_bold slds-m-top_medium">
+                        New Lookup ID
+                    </p>
+                    <p>{selectedRow.New_Value_Lookup_ID__c}</p>
+
+                    <p class="slds-text-title_bold slds-m-top_medium">
+                        Modified By
+                    </p>
+                    <p>{selectedRow.ModifiedByName}</p>
+
+                    <p class="slds-text-title_bold slds-m-top_medium">
+                        Modified Date
+                    </p>
+                    <lightning-formatted-date-time
+                        value={selectedRow.Modified_Date__c}>
+                    </lightning-formatted-date-time>
+
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <lightning-button
+                        label="Close"
+                        onclick={closeExpand}>
+                    </lightning-button>
+                </footer>
+            </div>
+        </section>
+
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>
