@@ -145,7 +145,6 @@ public class AuditRecordCreation {
      */
     private static List<Audit__c> buildAuditRecords(List<Map<String, Object>> changes, Map<Id, String> labelMap, String objectName) {
         List<Audit__c> audits = new List<Audit__c>();
-        Map<String, String> objectToAuditField = getObjectToAuditFieldMap();
 
         for (Map<String, Object> change : changes) {
             try {
@@ -179,22 +178,5 @@ public class AuditRecordCreation {
             }
         }
         return audits;
-    }
-
-    /**
-     * Parse label-based object to Audit__c field mapping.
-     */
-    private static Map<String, String> getObjectToAuditFieldMap() {
-        Map<String, String> mapResult = new Map<String, String>();
-        String raw = Label.Audit_Object_Field_Mapping;
-        if (String.isBlank(raw)) return mapResult;
-
-        for (String pair : raw.split(',')) {
-            List<String> parts = pair.split(':');
-            if (parts.size() == 2) {
-                mapResult.put(parts[0].trim(), parts[1].trim());
-            }
-        }
-        return mapResult;
     }
 }
