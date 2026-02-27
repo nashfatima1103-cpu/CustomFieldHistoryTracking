@@ -1,5 +1,7 @@
 public class AuditRecordCreation {
-    // Created by Nashra Fatima (Absyz) for Audit Object record creation.
+    /**
+     * Created by Nashra Fatima for Audit Object record creation.
+     */
 
     /**
      * Entry point for recording audit trail for field changes
@@ -145,6 +147,7 @@ public class AuditRecordCreation {
      */
     private static List<Audit__c> buildAuditRecords(List<Map<String, Object>> changes, Map<Id, String> labelMap, String objectName) {
         List<Audit__c> audits = new List<Audit__c>();
+        //Map<String, String> objectToAuditField = getObjectToAuditFieldMap();
 
         for (Map<String, Object> change : changes) {
             try {
@@ -171,14 +174,11 @@ public class AuditRecordCreation {
                     audit.Old_Value__c = oldValue != null ? String.valueOf(oldValue) : null;
                     audit.New_Value__c = newValue != null ? String.valueOf(newValue) : null;
                 }
-
                 audits.add(audit);
             } catch (Exception e) {
                 System.debug('Failed to build audit record: ' + e.getMessage());
             }
         }
         return audits;
-    }
-
-   
-}
+    }  
+} 
