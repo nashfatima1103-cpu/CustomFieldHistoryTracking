@@ -1,51 +1,29 @@
 import { LightningElement, api, wire, track } from 'lwc';
+import { refreshApex } from '@salesforce/apex';
 import getAuditRecords from '@salesforce/apex/AuditTableController.getAuditRecords';
 
 const COLUMNS = [
     {
         label: '',
         type: 'button',
-        fixedWidth: 90,
+        initialWidth: 100,
         typeAttributes: {
             label: 'Expand',
             name: 'expand',
             variant: 'base'
         }
     },
-    {
-        label: 'Field Name',
-        fieldName: 'Field_Name__c',
-        type: 'text'
-    },
-    {
-        label: 'Old Value',
-        fieldName: 'Old_Value__c',
-        type: 'text',
-    },
-    {
-        label: 'Old Value (Lookup ID)',
-        fieldName: 'Old_Value_Lookup_ID__c',
-        type: 'text'
-    },
-    {
-        label: 'New Value',
-        fieldName: 'New_Value__c',
-        type: 'text',
-    },
-    {
-        label: 'New Value (Lookup ID)',
-        fieldName: 'New_Value_Lookup_ID__c',
-        type: 'text'
-    },
-    {
-        label: 'Modified By',
-        fieldName: 'ModifiedByName',
-        type: 'text'
-    },
+    { label: 'Field Name', fieldName: 'Field_Name__c', type: 'text', initialWidth: 180 },
+    { label: 'Old Value', fieldName: 'Old_Value__c', type: 'text', initialWidth: 250 },
+    { label: 'Old Value (Lookup ID)', fieldName: 'Old_Value_Lookup_ID__c', type: 'text', initialWidth: 200 },
+    { label: 'New Value', fieldName: 'New_Value__c', type: 'text', initialWidth: 250 },
+    { label: 'New Value (Lookup ID)', fieldName: 'New_Value_Lookup_ID__c', type: 'text', initialWidth: 200 },
+    { label: 'Modified By', fieldName: 'ModifiedByName', type: 'text', initialWidth: 180 },
     {
         label: 'Modified Date',
         fieldName: 'Modified_Date__c',
         type: 'date',
+        initialWidth: 200,
         typeAttributes: {
             year: 'numeric',
             month: 'short',
@@ -61,23 +39,32 @@ export default class AuditTable extends LightningElement {
 
     columns = COLUMNS;
     data = [];
-    error;
+    wiredResult;
 
     @track showExpand = false;
     @track selectedRow;
+    @track showFullModal = false;
+    @track isLoading = false;
+
+    get recordCount() {
+        return this.data ? this.data.length : 0;
+    }
 
     @wire(getAuditRecords, { recordId: '$recordId' })
-    wiredAudits({ data, error }) {
-        if (data) {
-            this.data = data.map(row => ({
+    wiredAudits(result) {
+        this.wiredResult = result;
+        if (result.data) {
+            this.data = result.data.map(row => ({
                 ...row,
                 ModifiedByName: row.Modified_By__r?.Name
             }));
-            this.error = undefined;
-        } else if (error) {
-            this.error = error;
-            this.data = [];
         }
+    }
+
+    async handleRefresh() {
+        this.isLoading = true;
+        await refreshApex(this.wiredResult);
+        this.isLoading = false;
     }
 
     handleRowAction(event) {
@@ -85,6 +72,14 @@ export default class AuditTable extends LightningElement {
             this.selectedRow = event.detail.row;
             this.showExpand = true;
         }
+    }
+
+    openFullModal() {
+        this.showFullModal = true;
+    }
+
+    closeFullModal() {
+        this.showFullModal = false;
     }
 
     closeExpand() {
