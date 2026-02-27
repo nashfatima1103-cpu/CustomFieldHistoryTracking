@@ -1,0 +1,36 @@
+.table-scroll-container {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.modal-scroll-container {
+    height: 70vh;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.full-modal-container {
+    max-width: 95vw;
+    width: 95vw;
+}
+
+.custom-modal {
+    z-index: 10001;
+}
+
+.custom-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 10000;
+}
+
+.spinner-overlay {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+}
