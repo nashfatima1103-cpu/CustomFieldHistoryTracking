@@ -1,15 +1,106 @@
 <template>
-    <lightning-datatable
-        key-field="Id"
-        data={data}
-        columns={columns}
-        onrowaction={handleRowAction}
-        hide-checkbox-column
-        show-row-number-column>
-    </lightning-datatable>
 
+    <!-- Related List Card -->
+    <div class="slds-card">
+
+        <!-- Header -->
+        <div class="slds-card__header slds-grid slds-grid_align-spread slds-p-horizontal_small slds-p-vertical_x-small">
+
+            <div class="slds-media slds-media_center">
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <a href="javascript:void(0);"
+                           onclick={openFullModal}
+                           class="slds-card__header-link slds-truncate">
+                            Audit ({recordCount})
+                        </a>
+                    </h2>
+                </div>
+            </div>
+
+            <!-- Refresh Icon -->
+            <lightning-button-icon
+                icon-name="utility:refresh"
+                variant="border-filled"
+                alternative-text="Refresh"
+                title="Refresh"
+                onclick={handleRefresh}
+                disabled={isLoading}>
+            </lightning-button-icon>
+
+        </div>
+
+        <!-- Body -->
+        <div class="slds-card__body slds-card__body_inner">
+
+            <template if:true={isLoading}>
+                <div class="spinner-overlay">
+                    <lightning-spinner size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <div class="table-scroll-container">
+                <lightning-datatable
+                    key-field="Id"
+                    data={data}
+                    columns={columns}
+                    onrowaction={handleRowAction}
+                    hide-checkbox-column
+                    show-row-number-column
+                    column-widths-mode="auto">
+                </lightning-datatable>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="slds-card__footer slds-align_absolute-center">
+            <a href="javascript:void(0);"
+               onclick={openFullModal}
+               class="slds-card__footer-action">
+                View All
+            </a>
+        </div>
+
+    </div>
+
+    <!-- FULL SCREEN MODAL -->
+    <template if:true={showFullModal}>
+        <section role="dialog" class="slds-modal slds-fade-in-open slds-modal_full custom-modal">
+            <div class="slds-modal__container full-modal-container">
+                <header class="slds-modal__header">
+                    <h2 class="slds-text-heading_medium">
+                        Audit ({recordCount})
+                    </h2>
+                </header>
+
+                <div class="slds-modal__content modal-scroll-container">
+                    <lightning-datatable
+                        key-field="Id"
+                        data={data}
+                        columns={columns}
+                        onrowaction={handleRowAction}
+                        hide-checkbox-column
+                        show-row-number-column
+                        column-widths-mode="auto">
+                    </lightning-datatable>
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <lightning-button
+                        label="Close"
+                        onclick={closeFullModal}>
+                    </lightning-button>
+                </footer>
+            </div>
+        </section>
+
+        <div class="custom-backdrop"></div>
+    </template>
+
+    <!-- ROW DETAIL MODAL -->
     <template if:true={showExpand}>
-        <section role="dialog" class="slds-modal slds-fade-in-open slds-modal_large">
+        <section role="dialog" class="slds-modal slds-fade-in-open slds-modal_large custom-modal">
             <div class="slds-modal__container">
                 <header class="slds-modal__header">
                     <h2 class="slds-text-heading_medium">
@@ -25,26 +116,14 @@
                     </p>
 
                     <p class="slds-text-title_bold">Old Value</p>
-                    <lightning-formatted-text
-                        value={selectedRow.Old_Value__c}>
+                    <lightning-formatted-text value={selectedRow.Old_Value__c}>
                     </lightning-formatted-text>
 
                     <p class="slds-text-title_bold slds-m-top_medium">
                         New Value
                     </p>
-                    <lightning-formatted-text
-                        value={selectedRow.New_Value__c}>
+                    <lightning-formatted-text value={selectedRow.New_Value__c}>
                     </lightning-formatted-text>
-
-                    <p class="slds-text-title_bold slds-m-top_medium">
-                        Old Lookup ID
-                    </p>
-                    <p>{selectedRow.Old_Value_Lookup_ID__c}</p>
-
-                    <p class="slds-text-title_bold slds-m-top_medium">
-                        New Lookup ID
-                    </p>
-                    <p>{selectedRow.New_Value_Lookup_ID__c}</p>
 
                     <p class="slds-text-title_bold slds-m-top_medium">
                         Modified By
@@ -69,6 +148,7 @@
             </div>
         </section>
 
-        <div class="slds-backdrop slds-backdrop_open"></div>
+        <div class="custom-backdrop"></div>
     </template>
+
 </template>
